@@ -70,7 +70,7 @@ export const ComplaintGenerator: React.FC = () => {
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Input Column */}
-        <div className="bg-justice-card border border-justice-border p-6 sm:p-8 rounded-xl shadow-2xl animate-[fadeInUp_0.6s_ease-out_forwards]">
+        <div className="bg-justice-card border border-justice-border p-6 sm:p-8 rounded-xl shadow-2xl animate-fade-in-up hover:border-justice-gold/30 transition-colors duration-300">
           <div className="flex items-center gap-3 mb-8 pb-4 border-b border-justice-border">
             <div className="p-2 bg-zinc-900 rounded-lg">
               <FileText className="h-6 w-6 text-justice-gold" />
@@ -102,20 +102,20 @@ export const ComplaintGenerator: React.FC = () => {
           )}
 
           <Button 
-            className="w-full mt-8" 
+            className="w-full mt-8 group" 
             onClick={handleSubmit} 
             isLoading={isLoading}
           >
-            {!isLoading && <Sparkles className="mr-2 h-4 w-4" />}
+            {!isLoading && <Sparkles className="mr-2 h-4 w-4 group-hover:animate-spin" />}
             Сгенерировать обращение
           </Button>
         </div>
 
         {/* Output Column */}
-        <div className="bg-justice-card border border-justice-border p-6 sm:p-8 rounded-xl shadow-2xl flex flex-col h-full animate-[fadeInUp_0.6s_ease-out_0.2s_forwards] opacity-0">
+        <div className="bg-justice-card border border-justice-border p-6 sm:p-8 rounded-xl shadow-2xl flex flex-col h-full animate-fade-in-up [animation-delay:200ms] opacity-0 hover:border-justice-gold/30 transition-colors duration-300">
            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-justice-border">
             <div className="p-2 bg-zinc-900 rounded-lg">
-              <Sparkles className="h-6 w-6 text-justice-gold" />
+              <Sparkles className="h-6 w-6 text-justice-gold animate-pulse-slow" />
             </div>
             <h3 className="text-xl font-bold text-white uppercase tracking-wide">Результат генерации</h3>
           </div>

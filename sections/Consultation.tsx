@@ -73,9 +73,9 @@ export const Consultation: React.FC = () => {
 
   return (
     <Section id="consultation" title="Запись на консультацию" subtitle="Отправьте заявку напрямую в Discord канал прокуратуры">
-      <div className="max-w-2xl mx-auto bg-justice-card border border-justice-border rounded-xl p-8 shadow-2xl relative overflow-hidden animate-[fadeInUp_0.8s_ease-out_forwards]">
+      <div className="max-w-2xl mx-auto bg-justice-card border border-justice-border rounded-xl p-8 shadow-2xl relative overflow-hidden animate-fade-in-up">
         {/* Background Accent */}
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-justice-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-justice-gold/10 rounded-full blur-3xl pointer-events-none animate-float"></div>
 
         <form onSubmit={handleSubmit} className="relative z-10">
           <div className="bg-zinc-900/50 p-4 rounded-lg border border-yellow-900/30 mb-6 flex items-start gap-3">

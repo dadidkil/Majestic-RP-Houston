@@ -1,8 +1,15 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { ComplaintFormState, GeneratedComplaint } from "../types";
 
-// Initialize the client with the environment API key
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper for lazy initialization to prevent "process is not defined" crashes on static hosts
+const getAIClient = () => {
+  // Access process.env safely
+  const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) ? process.env.API_KEY : '';
+  if (!apiKey) {
+    console.warn("API Key is missing!");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 const responseSchema: Schema = {
   type: Type.OBJECT,
@@ -38,11 +45,15 @@ const SYSTEM_INSTRUCTION = `
 7. Пункт 4: "4. Дата и время произошедшего : {Дата и время}"
 8. Пункт 5: "5. Материалы дела : *{ссылка/ссылки}*"
    - Извлеки URL. Оберни каждую ссылку в звездочки (*).
-9. Пункт 6: "6. Ваш контактный адрес электронной почты, ксерокопия паспорта : {Email}, [ксерокопия паспорта]({СсылкаНаПаспорт})"
-   - ВАЖНО ПРО EMAIL: Возьми имя пользователя Discord (все что до # или полный ник, если тега нет) и ОБЯЗАТЕЛЬНО добавь суффикс "@sa.gov". 
-     Пример: если Discord "igr0m#1234" -> пиши "igr0m@sa.gov". 
-     Пример 2: если Discord "alex" -> пиши "alex@sa.gov".
-   - ВАЖНО ПРО ПАСПОРТ: Сформируй ссылку в формате Markdown: [ксерокопия паспорта](ссылка).
+9. Пункт 6: "6. Ваш контактный адрес электронной почты, ксерокопия паспорта : {EMAIL}, {PASSPORT_LINK}"
+   - СТРОГОЕ ПРАВИЛО ДЛЯ EMAIL: Возьми логин Discord пользователя (все что до знака #, или полный ник если нет тега), удали пробелы и ПРИНУДИТЕЛЬНО добавь "@sa.gov". 
+     Пример: ввод "igr0m" -> вывод "igr0m@sa.gov".
+     Пример: ввод "test user" -> вывод "testuser@sa.gov".
+     Пример: ввод "kot#1234" -> вывод "kot@sa.gov".
+     НИКОГДА не оставляй просто ник. Всегда добавляй @sa.gov.
+   - СТРОГОЕ ПРАВИЛО ДЛЯ ПАСПОРТА: Создай Markdown ссылку. Текст ссылки ДОЛЖЕН БЫТЬ СТРОГО "ксерокопия паспорта".
+     Пример: ввод "https://imgur.com/123" -> вывод "[ксерокопия паспорта](https://imgur.com/123)".
+   - ИТОГОВЫЙ ПРИМЕР СТРОКИ: "6. Ваш контактный адрес электронной почты, ксерокопия паспорта : igr0m@sa.gov, [ксерокопия паспорта](https://imgur.com/123)"
 10. Пункт 7: "7. Ваша подпись и ее расшифровка : {Инициалы} / {Имя Фамилия}"
 `;
 
@@ -62,6 +73,7 @@ export const generateComplaintText = async (data: ComplaintFormState): Promise<G
   `;
 
   try {
+    const ai = getAIClient();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: userPrompt,

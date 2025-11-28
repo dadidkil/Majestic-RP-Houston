@@ -46,8 +46,8 @@ export const FAQ: React.FC = () => {
         {faqData.map((item, index) => (
           <div 
             key={index} 
-            className={`border border-justice-border rounded-lg overflow-hidden transition-all duration-300 animate-[fadeInUp_0.5s_ease-out_forwards] ${openIndex === index ? 'bg-zinc-900 shadow-lg shadow-justice-gold/5' : 'bg-justice-card hover:bg-zinc-900'}`}
-            style={{ animationDelay: `${index * 100}ms`, opacity: 0 }}
+            className={`border border-justice-border rounded-lg overflow-hidden transition-all duration-300 animate-fade-in-up ${openIndex === index ? 'bg-zinc-900 shadow-lg shadow-justice-gold/5' : 'bg-justice-card hover:bg-zinc-900 hover:border-justice-gold/50'}`}
+            style={{ animationDelay: `${index * 150}ms`, opacity: 0 }}
           >
             <button
               onClick={() => toggle(index)}
