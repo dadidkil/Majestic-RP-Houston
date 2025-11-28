@@ -1,16 +1,6 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { ComplaintFormState, GeneratedComplaint } from "../types";
 
-// Helper for lazy initialization to prevent "process is not defined" crashes on static hosts
-const getAIClient = () => {
-  // Access process.env safely
-  const apiKey = (typeof process !== 'undefined' && process.env?.API_KEY) ? process.env.API_KEY : '';
-  if (!apiKey) {
-    console.warn("API Key is missing!");
-  }
-  return new GoogleGenAI({ apiKey });
-};
-
 const responseSchema: Schema = {
   type: Type.OBJECT,
   properties: {
@@ -57,39 +47,4 @@ const SYSTEM_INSTRUCTION = `
 10. Пункт 7: "7. Ваша подпись и ее расшифровка : {Инициалы} / {Имя Фамилия}"
 `;
 
-export const generateComplaintText = async (data: ComplaintFormState): Promise<GeneratedComplaint> => {
-  const userPrompt = `
-    Пожалуйста, обработай мою жалобу:
-    - Порядковый номер: ${data.number}
-    - Имя Фамилия: ${data.name}
-    - ID-card: ${data.id}
-    - Организация нарушителя: ${data.org}
-    - Жетон/Имя нарушителя: ${data.violator}
-    - Описание: ${data.description}
-    - Дата и время: ${data.date}
-    - Материалы: ${data.materials}
-    - Паспорт: ${data.passport}
-    - Discord: ${data.discord}
-  `;
-
-  try {
-    const ai = getAIClient();
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: userPrompt,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-        responseSchema: responseSchema,
-      },
-    });
-
-    const text = response.text;
-    if (!text) throw new Error("No response from AI");
-
-    return JSON.parse(text) as GeneratedComplaint;
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to generate complaint. Please try again.");
-  }
-};
+export const generateComplaintText = async (data: ComplaintFormState): Promise<GeneratedComplaint
